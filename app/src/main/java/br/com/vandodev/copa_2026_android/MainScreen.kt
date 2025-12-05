@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import br.com.vandodev.copa_2026_android.ui.TeamColors
+import br.com.vandodev.copa_2026_android.ui.isDark
 import br.com.vandodev.domain.model.Match
 import br.com.vandodev.domain.model.Team
 import coil.compose.AsyncImage
@@ -70,8 +72,15 @@ fun MainScreen(viewModel: MainViewModel) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    items(state.matches) { match ->
-                        MatchItem(match = match, onNotificationClick = viewModel::toggleNotification)
+                    items(state.matches.size) { index ->
+                        val match = state.matches[index]
+                        val teamColor = TeamColors.getColorForTeam(match.teamA.name)
+                        MatchItem(
+                            match = match, 
+                            onNotificationClick = viewModel::toggleNotification,
+                            backgroundColor = teamColor,
+                            contentColor = if (teamColor.isDark()) Color.White else Color.Black
+                        )
                     }
                 }
             }
@@ -80,21 +89,25 @@ fun MainScreen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun MatchItem(match: Match, onNotificationClick: (Match) -> Unit) {
-    Card(modifier = Modifier.padding(horizontal = 16.dp)) {
+fun MatchItem(match: Match, onNotificationClick: (Match) -> Unit, backgroundColor: Color, contentColor: Color) {
+    Card(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TeamInfo(team = match.teamA)
+                TeamInfo(team = match.teamA, contentColor = contentColor)
                 Text(
                     text = "X",
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = contentColor
                 )
-                TeamInfo(team = match.teamB)
+                TeamInfo(team = match.teamB, contentColor = contentColor)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -103,7 +116,7 @@ fun MatchItem(match: Match, onNotificationClick: (Match) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
-                Text(text = "Data: ${match.date.format(formatter)}")
+                Text(text = "Data: ${match.date.format(formatter)}", color = contentColor)
                 Image(
                     imageVector = if (match.notificationEnabled) Icons.Filled.Notifications else Icons.Outlined.Notifications,
                     contentDescription = null,
@@ -115,13 +128,13 @@ fun MatchItem(match: Match, onNotificationClick: (Match) -> Unit) {
 }
 
 @Composable
-fun TeamInfo(team: Team) {
+fun TeamInfo(team: Team, contentColor: Color) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AsyncImage(
             model = team.flag,
             contentDescription = null,
             modifier = Modifier.size(40.dp)
         )
-        Text(text = team.name, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
+        Text(text = team.name, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center, color = contentColor)
     }
 }

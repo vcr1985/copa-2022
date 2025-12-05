@@ -3,10 +3,10 @@ package br.com.vandodev.domain.model
 data class MatchData(
     val tournament: String,
     val timezone: String,
-    val matches: List<Match>
+    val matches: List<MatchInfo>
 )
 
-data class Match(
+data class MatchInfo(
     val match_id: Int,
     val home_team: String,
     val away_team: String,
