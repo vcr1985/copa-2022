@@ -42,7 +42,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            text = "Copa 2026",
+            text = "Copa 2022",
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier
                 .fillMaxWidth()

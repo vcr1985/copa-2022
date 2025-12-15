@@ -9,7 +9,7 @@ import br.com.vandodev.copa_2022_android.di.ViewModelFactory
 class MainActivity : ComponentActivity() {
 
     private val container by lazy {
-        (application as Copa2026AndroidApp).container
+        (application as Copa2022AndroidApp).container
     }
 
     private val viewModel: MainViewModel by viewModels {
